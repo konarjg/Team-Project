@@ -124,7 +124,7 @@ public class UserServiceTests {
         //Arrange
         String email = "test@test.com";
         UserRepository userRepository = mock(UserRepository.class);
-        when(userRepository.existsByEmail(email)).thenReturn(false);
+        when(userRepository.existsByEmail(email)).thenReturn(true);
 
         UserService userService = new UserService(userRepository);
 

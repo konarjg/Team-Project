@@ -5,6 +5,7 @@ import com.github.konarjg.BackendAPI.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -13,6 +14,8 @@ import static org.mockito.Mockito.mock;
 public class UserRepositoryTests {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    TestEntityManager entityManager;
 
     @Test
     public void findByEmail_whenEmailIsNull_shouldReturnNull() {
@@ -46,7 +49,7 @@ public class UserRepositoryTests {
         user.setEmail("other@test.com");
         user.setPassword("test");
 
-        userRepository.save(user);
+        entityManager.persist(user);
 
         //Act
         User result = userRepository.findByEmail(email);
@@ -63,7 +66,7 @@ public class UserRepositoryTests {
         user.setEmail("test@test.com");
         user.setPassword("test");
 
-        userRepository.save(user);
+        entityManager.persist(user);
 
         //Act
         User result = userRepository.findByEmail(email);
@@ -104,7 +107,7 @@ public class UserRepositoryTests {
         user.setEmail("other@test.com");
         user.setPassword("test");
 
-        userRepository.save(user);
+        entityManager.persist(user);
 
         //Act
         boolean result = userRepository.existsByEmail(email);
@@ -121,7 +124,7 @@ public class UserRepositoryTests {
         user.setEmail("test@test.com");
         user.setPassword("test");
 
-        userRepository.save(user);
+        entityManager.persist(user);
 
         //Act
         boolean result = userRepository.existsByEmail(email);
@@ -218,7 +221,7 @@ public class UserRepositoryTests {
         user.setEmail("other@test.com");
         user.setPassword("test");
 
-        userRepository.save(user);
+        entityManager.persist(user);
 
         //Act
         User result = userRepository.findByEmailAndPassword(email, password);
@@ -237,7 +240,7 @@ public class UserRepositoryTests {
         user.setEmail("test@test.com");
         user.setPassword("other");
 
-        userRepository.save(user);
+        entityManager.persist(user);
 
         //Act
         User result = userRepository.findByEmailAndPassword(email, password);
@@ -256,7 +259,7 @@ public class UserRepositoryTests {
         user.setEmail("other@test.com");
         user.setPassword("other");
 
-        userRepository.save(user);
+        entityManager.persist(user);
 
         //Act
         User result = userRepository.findByEmailAndPassword(email, password);
@@ -272,8 +275,8 @@ public class UserRepositoryTests {
         String password = "test";
 
         User user = new User();
-        user.setEmail("other@test.com");
-        user.setPassword("other");
+        user.setEmail("test@test.com");
+        user.setPassword("test");
 
         userRepository.save(user);
 

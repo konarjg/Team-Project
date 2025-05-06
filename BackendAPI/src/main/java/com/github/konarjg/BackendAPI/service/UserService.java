@@ -13,23 +13,23 @@ public class UserService {
     }
 
     public void save(User user) {
-
+        repository.save(user);
     }
 
     public void delete(User user) {
-
+        repository.delete(user);
     }
 
     public User findByEmail(String email) {
-        return null;
+        return repository.findByEmail(email);
     }
 
     public User findByEmailAndPassword(String email, String password) {
-        return null;
+        return repository.findByEmailAndPassword(email, password);
     }
 
     public boolean existsByEmail(String email) {
-        return false;
+        return repository.existsByEmail(email);
     }
 
 }
