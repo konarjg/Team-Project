@@ -1,9 +1,8 @@
 package com.github.konarjg.BackendAPI.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity(name = "Users")
 public class User {
@@ -12,6 +11,8 @@ public class User {
     private long userId;
     private String email;
     private String password;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "user")
+    private List<Order> orders;
 
     public long getUserId() {
         return userId;
