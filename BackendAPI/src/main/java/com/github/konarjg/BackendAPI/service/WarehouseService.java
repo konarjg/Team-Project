@@ -1,5 +1,6 @@
 package com.github.konarjg.BackendAPI.service;
 
+import com.github.konarjg.BackendAPI.entity.Product;
 import com.github.konarjg.BackendAPI.entity.Warehouse;
 import com.github.konarjg.BackendAPI.repository.WarehouseRepository;
 import org.springframework.data.repository.query.Param;

@@ -14,8 +14,6 @@ public class Warehouse {
     private Location location;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<WarehouseItem> items;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "warehouse")
-    private List<Order> orders;
 
     public long getWarehouseId() {
         return warehouseId;
@@ -47,13 +45,5 @@ public class Warehouse {
 
     public void setItems(List<WarehouseItem> items) {
         this.items = items;
-    }
-
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
     }
 }
