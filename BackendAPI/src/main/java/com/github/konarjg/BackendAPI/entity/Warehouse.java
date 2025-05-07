@@ -10,7 +10,8 @@ public class Warehouse {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long warehouseId;
     private String name;
-    private String location;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Location location;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<WarehouseItem> items;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "warehouse")
@@ -32,11 +33,11 @@ public class Warehouse {
         this.name = name;
     }
 
-    public String getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 

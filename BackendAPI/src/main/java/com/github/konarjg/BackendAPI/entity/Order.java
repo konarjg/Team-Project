@@ -14,9 +14,8 @@ public class Order {
     private OrderState state;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<OrderItem> items;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Warehouse warehouse;
-    private String destination;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Location destination;
 
     public long getOrderId() {
         return orderId;
@@ -50,20 +49,13 @@ public class Order {
         this.items = items;
     }
 
-    public Warehouse getWarehouse() {
-        return warehouse;
-    }
-
-    public void setWarehouse(Warehouse warehouse) {
-        this.warehouse = warehouse;
-    }
-
-    public String getDestination() {
+    public Location getDestination() {
         return destination;
     }
 
-    public void setDestination(String destination) {
+    public void setDestination(Location destination) {
         this.destination = destination;
     }
+
 
 }

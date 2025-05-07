@@ -1,9 +1,6 @@
 package com.github.konarjg.BackendAPI.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity(name = "Products")
 public class Product {
@@ -45,5 +42,4 @@ public class Product {
     public void setPrice(double price) {
         this.price = price;
     }
-
 }
