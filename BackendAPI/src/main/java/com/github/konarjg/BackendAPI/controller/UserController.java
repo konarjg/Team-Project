@@ -1,10 +1,7 @@
 package com.github.konarjg.BackendAPI.controller;
 
 import com.github.konarjg.BackendAPI.dto.UserDTO;
-import com.github.konarjg.BackendAPI.entity.Order;
-import com.github.konarjg.BackendAPI.entity.OrderItem;
 import com.github.konarjg.BackendAPI.entity.User;
-import com.github.konarjg.BackendAPI.requestBody.UserOrdersUpdateRequest;
 import com.github.konarjg.BackendAPI.requestBody.UserRequest;
 import com.github.konarjg.BackendAPI.requestBody.UserUpdateRequest;
 import com.github.konarjg.BackendAPI.security.Hasher;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/v1/users")
