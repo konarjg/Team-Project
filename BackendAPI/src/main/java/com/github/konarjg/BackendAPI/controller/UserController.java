@@ -28,7 +28,7 @@ public class UserController {
     public ResponseEntity<UserDTO> login(@RequestBody UserRequest credentials) {
         credentials.setPassword(Hasher.hash(credentials.getPassword()));
 
-        User user = userService.findByEmailAndPassword(credentials.getEmail(), credentials.getPassword());
+        User user = userService.findByEmail(credentials.getEmail());
 
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

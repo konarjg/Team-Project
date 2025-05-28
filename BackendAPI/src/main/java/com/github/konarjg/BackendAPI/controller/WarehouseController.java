@@ -4,6 +4,7 @@ import com.github.konarjg.BackendAPI.entity.Location;
 import com.github.konarjg.BackendAPI.entity.Product;
 import com.github.konarjg.BackendAPI.entity.Warehouse;
 import com.github.konarjg.BackendAPI.entity.WarehouseItem;
+import com.github.konarjg.BackendAPI.requestBody.WarehouseAddRemoveProductRequest;
 import com.github.konarjg.BackendAPI.requestBody.WarehouseDeleteRequest;
 import com.github.konarjg.BackendAPI.requestBody.WarehouseRequest;
 import com.github.konarjg.BackendAPI.service.LocationService;
@@ -11,10 +12,7 @@ import com.github.konarjg.BackendAPI.service.ProductService;
 import com.github.konarjg.BackendAPI.service.WarehouseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +22,12 @@ import java.util.List;
 public class WarehouseController {
     private final WarehouseService warehouseService;
     private final LocationService locationService;
+    private final ProductService productService;
 
-    public WarehouseController(WarehouseService warehouseService, LocationService locationService) {
+    public WarehouseController(WarehouseService warehouseService, LocationService locationService, ProductService productService) {
         this.warehouseService = warehouseService;
         this.locationService = locationService;
+        this.productService = productService;
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/fetch")
@@ -70,5 +70,39 @@ public class WarehouseController {
         }
 
         return new ResponseEntity<>(warehouse, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/full-stock")
+    public ResponseEntity<List<WarehouseItem>> getFullStock() {
+        return new ResponseEntity<>(warehouseService.getFullStockList(), HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "stock")
+    public ResponseEntity<WarehouseItem> getStock(@RequestParam String productName) {
+        return new ResponseEntity<>(warehouseService.getStock(productName), HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, path = "/add-product")
+    public ResponseEntity<Void> addProduct(@RequestBody WarehouseAddRemoveProductRequest request) {
+        Product product = productService.findById(request.getProductId());
+
+        if (product == null) {
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        warehouseService.addProduct(request.getWarehouseId(), product, request.getQuantity());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, path = "/remove-product")
+    public ResponseEntity<Void> removeProduct(@RequestParam WarehouseAddRemoveProductRequest request) {
+        Product product = productService.findById(request.getProductId());
+
+        if (product == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        warehouseService.removeProduct(request.getWarehouseId(), product, request.getQuantity());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

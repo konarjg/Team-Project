@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Random;
 
-@RestController("/v1/orders")
+@RestController
+@RequestMapping("/v1/orders")
 public class OrderController {
     private final Random random = new Random();
     private final OrderService orderService;

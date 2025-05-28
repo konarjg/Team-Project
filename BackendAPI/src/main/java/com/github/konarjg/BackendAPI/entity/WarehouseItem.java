@@ -7,9 +7,18 @@ public class WarehouseItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long warehouseItemId;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Product product;
-    private int quantity;
+    private long quantity;
+
+    public WarehouseItem() {
+
+    }
+
+    public WarehouseItem(Product product, long quantity) {
+        this.product = product;
+        this.quantity = quantity;
+    }
 
     public long getWarehouseItemId() {
         return warehouseItemId;
@@ -27,11 +36,11 @@ public class WarehouseItem {
         this.product = product;
     }
 
-    public int getQuantity() {
+    public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(long quantity) {
         this.quantity = quantity;
     }
 }
