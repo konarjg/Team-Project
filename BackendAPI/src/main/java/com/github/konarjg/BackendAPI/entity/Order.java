@@ -9,8 +9,6 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long orderId;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private User user;
     private OrderState state;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<OrderItem> items;
@@ -25,21 +23,13 @@ public class Order {
         this.orderId = orderId;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public OrderState getState() {
         return state;
     }
 
     public void setState(OrderState state) {
         this.state = state;
-    }-
+    }
 
     public List<OrderItem> getItems() {
         return items;

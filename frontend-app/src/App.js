@@ -1,86 +1,27 @@
-import React, { useState } from 'react';
-import './App.css';
-import LoginForm from './components/LoginForm';
-import RegisterForm from './components/RegisterForm';
-import ShopPage from './pages/ShopPage';
-import { FaHome, FaShoppingCart, FaSignInAlt, FaUserPlus } from 'react-icons/fa';
-import logo from './images/logo.svg';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Home } from "./pages/Home";
+import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
+import { ForgotPassword } from "./pages/ForgotPassword";
+import { CategoryPage } from "./pages/CategoryPage";
+import { Cart } from "./pages/Cart";
+import { Checkout } from "./pages/Checkout";
+import { Account } from "./pages/Account";
 
-const App = () => {
-    const [currentUser , setCurrentUser ] = useState(null); // State to manage the current user
-    const [view, setView] = useState('home'); // State to manage the current view
-    const [registeredUsers, setRegisteredUsers] = useState([]); // State to manage registered users
-
-    const handleLogin = (user) => {
-        const foundUser  = registeredUsers.find(
-            (u) => u.username === user.username && u.password === user.password
-        );
-
-        if (foundUser ) {
-            setCurrentUser (foundUser );
-            setView('shop');
-        } else {
-            alert('Invalid username or password');
-        }
-    };
-
-    const handleRegister = (newUser ) => {
-        setRegisteredUsers([...registeredUsers, newUser ]);
-        setView('login');
-    };
-
-    const handleLogout = () => {
-        setCurrentUser (null);
-        setView('home');
-    };
-
-    const toggleView = (view) => {
-        setView(view);
-    };
-
-    return (
-        <div className="container">
-            <header>
-                <nav>
-                    <ul>
-                        <li>
-                            <img src={logo} alt="Logo" className="logo" />
-                        </li>
-                        <li>
-                            <button onClick={() => toggleView('home')}><FaHome /> Home</button>
-                        </li>
-						<li>
-                            <button onClick={() => toggleView('shop')}><FaShoppingCart /> Shop</button>
-                        </li>
-                        {currentUser  ? (
-                            <>
-                                <li>
-                                    <button onClick={handleLogout}>Logout</button>
-                                </li>
-                                <li>
-                                    <h2 className="greeting">Hello, {currentUser .username}!</h2>
-                                </li>
-                            </>
-                        ) : (
-                            <>
-                                <li>
-                                    <button onClick={() => toggleView('login')}><FaSignInAlt /> Login</button>
-                                </li>
-                                <li>
-                                    <button onClick={() => toggleView('register')}><FaUserPlus /> Register</button>
-                                </li>
-                            </>
-                        )}
-                    </ul>
-                </nav>
-            </header>
-
-            {view === 'home' && <h1>Welcome to the Online Shop</h1>}
-            {view === 'login' && !currentUser  && <LoginForm onLogin={handleLogin} />}
-            {view === 'register' && <RegisterForm onRegister={handleRegister} />}
-            {view === 'shop' && <ShopPage currentUser ={currentUser } onLogout={handleLogout} />}
-        </div>
-    );
+export default function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register/>} />
+        <Route path="/forgot-password" element={<ForgotPassword/>} />
+        <Route path="/category/:name" element={<CategoryPage />}></Route>
+        <Route path="/cart" element={<Cart />}></Route>
+        <Route path="/checkout" element={<Checkout />}></Route>
+        <Route path="/account" element={<Account />}></Route>
+      </Routes>
+    </Router>
+  );
 };
-
-export default App;

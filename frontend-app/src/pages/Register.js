@@ -1,0 +1,17 @@
+import React from "react";
+import { TopNav } from '../components/TopNav';
+import { Footer } from '../components/Footer';
+import { Box } from '@mui/material';
+import { RegisterForm } from '../components/RegisterForm';
+
+export function Register() {
+    return (
+        <main>
+            <TopNav/>
+            <Box sx={{display: "flex", flex: "1", maxWidth: "98vw"}}>
+                <RegisterForm></RegisterForm>
+            </Box>
+            <Footer/>
+        </main>
+    );
+}

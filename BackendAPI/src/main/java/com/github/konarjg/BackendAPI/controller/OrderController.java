@@ -61,7 +61,6 @@ public class OrderController {
         }).toList();
 
         Order order = new Order();
-        order.setUser(user);
         order.setDestination(destination);
         order.setItems(items);
         order.setState(request.getState());

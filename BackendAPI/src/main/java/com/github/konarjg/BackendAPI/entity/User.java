@@ -11,7 +11,7 @@ public class User {
     private long userId;
     private String email;
     private String password;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Order> orders;
 
     public long getUserId() {
