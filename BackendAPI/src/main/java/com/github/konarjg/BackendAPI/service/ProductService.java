@@ -2,6 +2,7 @@ package com.github.konarjg.BackendAPI.service;
 
 import com.github.konarjg.BackendAPI.entity.Product;
 import com.github.konarjg.BackendAPI.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,33 +19,40 @@ public class ProductService {
         return productRepository.findById(id).orElse(null);
     }
 
-    public List<Product> findAll() {
-        return productRepository.findAll();
+    @Transactional
+    public void decreaseStock(Long productId, long quantity) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + productId));
+
+        if (product.getStock() < quantity) {
+            return;
+        }
+
+        product.setStock(product.getStock() - quantity);
+        productRepository.save(product);
     }
 
-    public List<Product> findAllByQuery(String query) {
-        return productRepository.findAllByQuery(query);
-    }
-
+    @Transactional
     public boolean save(Product product) {
         try {
             productRepository.save(product);
             return true;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {
             return false;
         }
     }
 
-    public boolean delete(Product product) {
+    @Transactional
+    public boolean deleteByProductId(Long id) {
         try {
-            productRepository.delete(product);
+            productRepository.deleteById(id);
             return true;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {
             return false;
         }
+    }
+
+    public List<Product> findAll() {
+        return productRepository.findAll();
     }
 }

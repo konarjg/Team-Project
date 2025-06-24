@@ -3,6 +3,7 @@ import { Box, TextField, Button, Typography, InputAdornment, IconButton, Link } 
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
+import {login} from "../services/UserService";
 
 export function LoginForm() {
   const [values, setValues] = useState({ email: "", password: "", showPassword: false });
@@ -14,9 +15,19 @@ export function LoginForm() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Logging in with:", values);
-    sessionStorage.setItem("isLoggedIn", true);
-    window.location.reload();
+    login(values.email, values.password).then(user => {
+        if (user === null) {
+          alert("Incorrect credentials!");
+          return;
+        }
+
+        sessionStorage.setItem("isLoggedIn", true);
+        sessionStorage.setItem("user", JSON.stringify(user));
+        alert("Logged in!")
+        navigate("/");
+    });
+
+    
   };
 
   return (
@@ -67,10 +78,6 @@ export function LoginForm() {
       <Button variant="contained" color="primary" fullWidth onClick={handleSubmit}>
         Login
       </Button>
-
-      <Typography align="center" sx={{ mt: 2 }}>
-        <Link onClick={() => navigate("/forgot-password")} sx={{ cursor: "pointer" }}>Forgot Password?</Link>
-      </Typography>
       
       <Typography align="center">
         Don't have an account?{" "}

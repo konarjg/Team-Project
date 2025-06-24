@@ -9,13 +9,27 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long userId;
+    private String name;
     private String email;
     private String password;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private List<Order> orders;
+
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "user")
+    public List<Order> orders;
 
     public long getUserId() {
         return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {

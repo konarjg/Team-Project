@@ -1,34 +1,11 @@
-package com.github.konarjg.BackendAPI.entity;
+package com.github.konarjg.BackendAPI.requestBody;
 
-import jakarta.persistence.*;
-
-@Entity(name = "Products")
-public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long productId;
+public class CreateProductBody {
     private String name;
     private String image;
     private long stock;
     private double price;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Category category;
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(long productId) {
-        this.productId = productId;
-    }
+    private long categoryId;
 
     public String getName() {
         return name;
@@ -60,5 +37,13 @@ public class Product {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(long categoryId) {
+        this.categoryId = categoryId;
     }
 }

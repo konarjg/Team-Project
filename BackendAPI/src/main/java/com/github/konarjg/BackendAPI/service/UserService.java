@@ -2,34 +2,28 @@ package com.github.konarjg.BackendAPI.service;
 
 import com.github.konarjg.BackendAPI.entity.User;
 import com.github.konarjg.BackendAPI.repository.UserRepository;
+import com.github.konarjg.BackendAPI.security.Hasher;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
-    private final UserRepository repository;
+    private final UserRepository userRepository;
 
-    public UserService(UserRepository repository) {
-        this.repository = repository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public void save(User user) {
-        repository.save(user);
-    }
-
-    public void delete(User user) {
-        repository.delete(user);
-    }
-
-    public User findByEmail(String email) {
-        return repository.findByEmail(email);
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public User findByEmailAndPassword(String email, String password) {
-        return repository.findByEmailAndPassword(email, password);
+        return userRepository.findByEmailAndPassword(email, password);
     }
 
-    public boolean existsByEmail(String email) {
-        return repository.existsByEmail(email);
+    public User save(User user) {
+        return userRepository.save(user);
     }
-
 }

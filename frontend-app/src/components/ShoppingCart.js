@@ -13,17 +13,17 @@ export function ShoppingCart() {
     setCartItems(storedCart);
   }, []);
 
-  const handleIncrease = (id) => {
+  const handleIncrease = (productId) => {
     const updatedCart = cartItems.map(item =>
-      item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+      item.productId === productId ? { ...item, quantity: item.quantity + 1 } : item
     );
     sessionStorage.setItem("cart", JSON.stringify(updatedCart));
     setCartItems(updatedCart);
   };
 
-  const handleDecrease = (id) => {
+  const handleDecrease = (productId) => {
     const updatedCart = cartItems.map(item =>
-      item.id === id ? { ...item, quantity: item.quantity - 1 } : item
+      item.productId === productId ? { ...item, quantity: item.quantity - 1 } : item
     ).filter(item => item.quantity > 0); 
 
     sessionStorage.setItem("cart", JSON.stringify(updatedCart));
@@ -38,16 +38,16 @@ export function ShoppingCart() {
 
       {cartItems.length > 0 ? (
         cartItems.map((item) => (
-          <Card key={item.id} sx={{ display: "flex", mb: 2 }}>
+          <Card key={item.productId} sx={{ display: "flex", mb: 2 }}>
             <CardMedia component="img" image={item.image} alt={item.name} sx={{ width: 100 }} />
             <CardContent sx={{ flex: 1 }}>
               <Typography variant="h6">{item.name}</Typography>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
-                <IconButton onClick={() => handleDecrease(item.id)} color="error">
+                <IconButton onClick={() => handleDecrease(item.productId)} color="error">
                   <RemoveIcon />
                 </IconButton>
                 <Typography>{item.quantity}</Typography>
-                <IconButton onClick={() => handleIncrease(item.id)} color="primary">
+                <IconButton onClick={() => handleIncrease(item.productId)} color="primary">
                   <AddIcon />
                 </IconButton>
               </Box>

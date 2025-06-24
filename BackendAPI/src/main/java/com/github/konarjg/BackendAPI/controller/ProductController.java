@@ -1,72 +1,82 @@
 package com.github.konarjg.BackendAPI.controller;
 
+import com.github.konarjg.BackendAPI.entity.Category;
 import com.github.konarjg.BackendAPI.entity.Product;
-import com.github.konarjg.BackendAPI.requestBody.ProductDeleteRequest;
-import com.github.konarjg.BackendAPI.requestBody.ProductRequest;
+import com.github.konarjg.BackendAPI.requestBody.CreateProductBody;
+import com.github.konarjg.BackendAPI.requestBody.UpdateProductBody;
+import com.github.konarjg.BackendAPI.service.CategoryService;
 import com.github.konarjg.BackendAPI.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/v1/products")
+@RequestMapping("/api/products")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ProductController {
     private final ProductService productService;
+    private final CategoryService categoryService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, CategoryService categoryService) {
         this.productService = productService;
+        this.categoryService = categoryService;
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/fetch")
-    public ResponseEntity<List<Product>> fetch() {
-        List<Product> products = productService.findAll();
+    @PutMapping("/update/{productId}")
+    public ResponseEntity<?> update(@PathVariable long productId, @RequestBody UpdateProductBody data) {
+        Category category = categoryService.findByCategoryId(data.getCategoryId());
 
-        if (products.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (category == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(products, HttpStatus.OK);
-    }
+        Product product = productService.findById(productId);
 
-    @RequestMapping(method = RequestMethod.GET, path = "/filter")
-    public ResponseEntity<List<Product>> filter(@RequestParam String query) {
-        List<Product> products = productService.findAllByQuery(query);
-
-        if (products.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (product == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(products, HttpStatus.OK);
-    }
-
-    @RequestMapping(method = RequestMethod.POST, path = "/create")
-    public ResponseEntity<Product> create(@RequestBody ProductRequest request) {
-        Product product = new Product();
-        product.setName(request.getName());
-        product.setPrice(request.getPrice());
-        product.setDescription(request.getDescription());
+        product.setCategory(category);
+        product.setName(data.getName());
+        product.setImage("http://localhost:9090/images/" + data.getImage() + ".jpg");
+        product.setStock(data.getStock());
+        product.setPrice(data.getPrice());
 
         if (!productService.save(product)) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>(product, HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, path = "/delete")
-    public ResponseEntity<Product> delete(@RequestBody ProductDeleteRequest request) {
-        Product product = productService.findById(request.getProductId());
+    @PostMapping("/create")
+    public ResponseEntity<?> create(@RequestBody CreateProductBody data) {
+        Category category = categoryService.findByCategoryId(data.getCategoryId());
 
-        if (product == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (category == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        if (!productService.delete(product)) {
+        Product product = new Product();
+        product.setCategory(category);
+        product.setName(data.getName());
+        product.setImage("http://localhost:9090/images/" + data.getImage() + ".jpg");
+        product.setStock(data.getStock());
+        product.setPrice(data.getPrice());
+
+        if (!productService.save(product)) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>(product, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/delete/{productId}")
+    public ResponseEntity<?> delete(@PathVariable Long productId) {
+        if (!productService.deleteByProductId(productId)) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

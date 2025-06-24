@@ -1,0 +1,17 @@
+# Stage 1: Build the application with Maven
+FROM eclipse-temurin:21-jdk-jammy as builder
+WORKDIR /app
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+RUN ./mvnw dependency:go-offline
+COPY src ./src
+RUN ./mvnw clean package -DskipTests
+
+# Stage 2: Create the final, smaller image
+FROM eclipse-temurin:21-jre-jammy
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
+# Expose the correct port for the application
+EXPOSE 9090 
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]

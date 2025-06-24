@@ -2,21 +2,21 @@ package com.github.konarjg.BackendAPI.entity;
 
 import jakarta.persistence.*;
 
-@Entity(name = "OrderItem")
+@Entity(name = "OrderItems")
 public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long orderItemId;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private long orderId;
+    @ManyToOne(fetch = FetchType.EAGER)
     private Product product;
-    private int quantity;
+    private long quantity;
 
-    public long getOrderItemId() {
-        return orderItemId;
+    public long getOrderId() {
+        return orderId;
     }
 
-    public void setOrderItemId(long orderItemId) {
-        this.orderItemId = orderItemId;
+    public void setOrderId(long orderId) {
+        this.orderId = orderId;
     }
 
     public Product getProduct() {
@@ -27,11 +27,12 @@ public class OrderItem {
         this.product = product;
     }
 
-    public int getQuantity() {
+    public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(long quantity) {
         this.quantity = quantity;
     }
 }
+

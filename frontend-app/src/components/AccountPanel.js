@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, Card, CardMedia, CardContent } from "@mui/material";
+import { update, getUserData } from "../services/UserService";
+
+const POLLING_INTERVAL_MS = 15000;
 
 export function AccountPanel() {
   const [user, setUser] = useState({ name: "", email: "", password: "" });
@@ -7,25 +10,40 @@ export function AccountPanel() {
   const [selectedOrder, setSelectedOrder] = useState(null);
 
   useEffect(() => {
-    // Load user credentials (simulation)
-    const storedUser = JSON.parse(sessionStorage.getItem("user")) || { name: "John Doe", email: "johndoe@example.com", password: "password123" };
-    setUser(storedUser);
+    const storedUser = JSON.parse(sessionStorage.getItem("user"));
+    if (!storedUser?.email) {
+      return;
+    }
 
-    // Load orders (simulation)
-    const storedOrders = JSON.parse(sessionStorage.getItem("orders")) || [
-      { id: 1, total: 150, status: "SHIPPING", products: [{ name: "Wireless Headphones", image: "https://example.com/headphones.jpg", quantity: 1, price: 75 }, { name: "Gaming Mouse", image: "https://example.com/mouse.jpg", quantity: 2, price: 37.5 }] },
-      { id: 2, total: 800, status: "PREPARING", products: [{ name: "Smartphone", image: "https://example.com/smartphone.jpg", quantity: 1, price: 800 }] }
-    ];
-    setOrders(storedOrders);
+    const fetchData = async () => {
+      try {
+        const latestUserData = await getUserData(storedUser.email);
+        setUser(latestUserData);
+        setOrders(latestUserData.orders);
+        sessionStorage.setItem("user", JSON.stringify(latestUserData));
+      } catch (error) {
+        console.error("Could not refresh data, session might be invalid.", error);
+      }
+    };
+
+    fetchData();
+
+    const intervalId = setInterval(fetchData, POLLING_INTERVAL_MS);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
-  const handleSave = () => {
-    sessionStorage.setItem("user", JSON.stringify(user));
-    alert("✅ Credentials updated successfully!");
+  const handleSave = async () => {
+    try {
+      await update(user.email, user.name, user.password);
+      alert("Changes saved successfully!");
+    } catch (error) {
+      alert("Failed to save changes.");
+    }
   };
 
   return (
@@ -34,12 +52,11 @@ export function AccountPanel() {
         Account Panel
       </Typography>
 
-      {/* User Credentials Update Section */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h6">Update Credentials</Typography>
         <TextField label="Name" name="name" fullWidth variant="outlined" value={user.name} onChange={handleChange} sx={{ my: 1 }} />
-        <TextField label="Email" name="email" fullWidth variant="outlined" value={user.email} onChange={handleChange} sx={{ my: 1 }} />
-        <TextField label="Password" name="password" type="password" fullWidth variant="outlined" value={user.password} onChange={handleChange} sx={{ my: 1 }} />
+        <TextField label="Email" name="email" fullWidth variant="outlined" value={user.email} onChange={handleChange} sx={{ my: 1 }} readOnly />
+        <TextField label="Password" name="password" type="password" placeholder="Enter new password" fullWidth variant="outlined" onChange={handleChange} sx={{ my: 1 }} />
         <Button variant="contained" color="primary" onClick={handleSave} sx={{ mt: 2 }}>
           Save Changes
         </Button>
@@ -47,7 +64,6 @@ export function AccountPanel() {
 
       <Typography variant="h6">Order History</Typography>
 
-      {/* Order Table Section */}
       <TableContainer component={Paper} sx={{ mt: 2 }}>
         <Table>
           <TableHead>
@@ -60,8 +76,8 @@ export function AccountPanel() {
           </TableHead>
           <TableBody>
             {orders.map((order) => (
-              <TableRow key={order.id}>
-                <TableCell>{order.id}</TableCell>
+              <TableRow key={order.orderId}>
+                <TableCell>{order.orderId}</TableCell>
                 <TableCell>{order.status}</TableCell>
                 <TableCell>${order.total.toFixed(2)}</TableCell>
                 <TableCell>
@@ -75,13 +91,12 @@ export function AccountPanel() {
         </Table>
       </TableContainer>
 
-      {/* Order Details Modal */}
       <Dialog open={Boolean(selectedOrder)} onClose={() => setSelectedOrder(null)}>
-        <DialogTitle>Order Details</DialogTitle>
+        <DialogTitle>Order Details - ID: {selectedOrder?.orderId}</DialogTitle>
         <DialogContent>
           {selectedOrder && selectedOrder.products.map((product, index) => (
             <Card key={index} sx={{ display: "flex", mb: 2 }}>
-              <CardMedia component="img" image={product.image} alt={product.name} sx={{ width: 80 }} />
+              <CardMedia component="img" image={product.image} alt={product.name} sx={{ width: 80, height: 80, objectFit: 'contain' }} />
               <CardContent sx={{ flex: 1 }}>
                 <Typography variant="h6">{product.name}</Typography>
                 <Typography>Quantity: {product.quantity}</Typography>

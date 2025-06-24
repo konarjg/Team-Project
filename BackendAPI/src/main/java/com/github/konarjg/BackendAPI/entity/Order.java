@@ -6,14 +6,33 @@ import java.util.List;
 
 @Entity(name = "Orders")
 public class Order {
+    public enum Status
+    {
+        PREPARING,
+        SHIPPING,
+        DELAYED,
+        LOST,
+        DELIVERED
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long orderId;
-    private OrderState state;
+    private double total;
+    private Status status;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private User user;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private List<OrderItem> items;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Location destination;
+    private List<OrderItem> products;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public long getOrderId() {
         return orderId;
@@ -23,29 +42,27 @@ public class Order {
         this.orderId = orderId;
     }
 
-    public OrderState getState() {
-        return state;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setState(OrderState state) {
-        this.state = state;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
-    public List<OrderItem> getItems() {
-        return items;
+    public double getTotal() {
+        return total;
     }
 
-    public void setItems(List<OrderItem> items) {
-        this.items = items;
+    public void setTotal(double total) {
+        this.total = total;
     }
 
-    public Location getDestination() {
-        return destination;
+    public List<OrderItem> getProducts() {
+        return products;
     }
 
-    public void setDestination(Location destination) {
-        this.destination = destination;
+    public void setProducts(List<OrderItem> products) {
+        this.products = products;
     }
-
-
 }

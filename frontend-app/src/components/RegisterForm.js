@@ -3,6 +3,7 @@ import { Box, TextField, Button, Typography, InputAdornment, IconButton, Link } 
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
+import {register} from "../services/UserService";
 
 export function RegisterForm() {
   const [values, setValues] = useState({ name: "", email: "", password: "", showPassword: false });
@@ -14,7 +15,7 @@ export function RegisterForm() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Registering with:", values);
+    register(values.email, values.name, values.password).then(t => alert(t));
   };
 
   return (

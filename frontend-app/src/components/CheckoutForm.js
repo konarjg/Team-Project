@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import PaymentIcon from "@mui/icons-material/Payment";
+import { createOrder } from "../services/OrderService";
 
 export function CheckoutForm() {
   const [cartItems, setCartItems] = useState([]);
@@ -11,9 +12,27 @@ export function CheckoutForm() {
   }, []);
 
   const handlePayment = () => {
-    sessionStorage.removeItem("cart"); // Simulates successful payment by clearing cart
-    setCartItems([]);
-    alert("🎉 Order placed successfully! Thank you for shopping at Buyer Zone.");
+    const storedUser = JSON.parse(sessionStorage.getItem("user"));
+    const storedCart = cartItems;
+    const total = cartItems.reduce((accumulator, currentItem) => {
+        const itemTotal = (currentItem.price || 0) * (currentItem.quantity || 0);
+        return accumulator + itemTotal;
+    }, 0);
+
+    const order = {
+       email: storedUser.email,
+       status: "PREPARING",
+       total: total,
+       products: storedCart
+    };
+
+    createOrder(order).then(t => {
+      storedUser.orders.push(order);
+      sessionStorage.setItem("user", JSON.stringify(storedUser));
+      sessionStorage.removeItem("cart"); 
+      setCartItems([]);
+      alert(t);
+    });
   };
 
   return (
